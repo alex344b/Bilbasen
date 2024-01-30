@@ -1,0 +1,18 @@
+﻿@using Classes
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title"><strong>@Car.Brand</strong> @Car.Model</h5>
+        <p class="card-text"><strong>Year:</strong> @Car.Year</p>
+        @* <p class="card-text"><strong>Color:</strong> @Car.Color</p> *@
+        <p class="card-text"><strong>Horsepower:</strong> @Car.Horsepower</p>
+        <p class="card-text"><strong>Engine Size:</strong> @Car.Engine</p>
+        <p class="card-text"><strong>Price:</strong> @Car.Price <soft>DKK</soft></p>
+        <p class="card-text"><strong>KM:</strong> @Car.KilometerCount <soft>KM</soft></p>
+        @* <p class="card-text"><strong>Kilometers Driven:</strong> @Car.KilometerCount</p> *@
+    </div>
+</div>
+
+@code {
+    [Parameter] public CarMake Car { get; set; }
+}

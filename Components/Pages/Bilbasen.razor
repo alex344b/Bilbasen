@@ -1,0 +1,94 @@
+﻿@page "/bilbasen"
+@using Classes
+@using CsvHelper
+@using CsvHelper.Configuration
+@using System.Globalization
+@using ElBilClasses
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>Bilbasen</PageTitle>
+
+<h1>Bilbasen</h1>
+
+
+
+<form>
+    <label for="Brand">Brand:</label><br>
+    <input type="text" id="Brand" name="Brand" @bind="selectedBrand"><br>
+    <label for="Model">Model:</label><br>
+    <input type="text" id="Model" name="Model"><br>
+    <button @onclick="HandleFormSubmit">Filter</button>
+</form>
+
+
+
+<table>
+    <tr>
+        <th>Cars</th>
+    </tr>
+    @if (originalCars != null)
+    {
+        @foreach (var car in originalCars)
+        {
+            <Cards Car ="@car" />
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="4">No cars found</td>
+        </tr>
+    }
+</table>
+
+
+
+@code
+{
+    private List<CarMake> originalCars = new List<CarMake>();
+    private string selectedBrand = "";
+
+    private void HandleFormSubmit()
+    {
+        Console.WriteLine($"Selected Brand: {selectedBrand}");
+        if (!string.IsNullOrEmpty(selectedBrand))
+        {
+            originalCars = originalCars.Where(car => string.Equals(car.Brand.Trim(), selectedBrand.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+
+        }
+
+        Console.WriteLine($"Filtered cars Count: {originalCars.Count}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Trail();
+    }
+
+    private List<CarMake> ReadCarsFromCsv(string csvContent)
+    {
+        using (var reader = new StringReader(csvContent))
+        using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
+        {
+            return csv.GetRecords<CarMake>().ToList();
+        }
+    }
+    private async void Trail()
+    {
+        using (var reader = new StreamReader(@"C:\Users\Alexander\OneDrive\Skrivebord\projekter\C#\Classes\CarBrands.csv"))
+        {
+            var csvContent = await reader.ReadToEndAsync();
+
+            originalCars = ReadCarsFromCsv(csvContent);
+
+            Random randomKm = new Random();
+
+            foreach (var car in originalCars)
+            {
+                car.KilometerCount = randomKm.Next(150, 200000).ToString();
+            }
+
+        }
+    }
+}
+
